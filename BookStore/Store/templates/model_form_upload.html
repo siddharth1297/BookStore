@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+
+    <script rel="script" src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <!--<script rel="script" src="{% static 'underscore/underscore-min.js' %}"></script>-->
+
+    <link rel="stylesheet" href="{% static 'bootstrap-4.1.1-dist/css/bootstrap.min.css' %}"/>
+    <link rel="script" href="{% static 'bootstrap-4.1.1-dist/js/bootstrap.min.js' %}">
+
+    <!--select2-bootstrap-->
+    <link rel="stylesheet" href="{% static 'select2-4.0.6-rc.1/dist/css/select2.min.css' %}">
+    <script rel="script" src="{% static 'select2-4.0.6-rc.1/dist/js/select2.min.js' %}"></script>
+</head>
+<html>
+    <div class="container-fluid">
+        <hr>
+
+        <form class="form-group" method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+  	            <!--<div class="col-sm-3">
+                    {{ form.subject }}
+                </div>-->
+                <div class="col-sm-6">
+                    {{ form.description }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form.tags }}
+                    <script>$("select[name$='tags']").select2({placeholder: "tags"});</script>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+
+                <div class="col-sm-4">
+                    {{ form.file }}
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" >Submit</button>
+                </div>
+                <div class="col-sm-6">
+                    {% if upload_status == 'Fail'%}
+                    <div class="alert alert-danger" role="alert">
+                      {{ upload_msg }}
+                    </div>
+                    {% endif %}
+                    {% if upload_status == 'Success'%}
+                    <div class="alert alert-success" role="alert">
+                      {{ upload_msg }}
+                    </div>
+                    {% endif %}
+                    {% if upload_status == 'Primary'%}
+                    <div class="alert alert-primary" role="alert">
+                      {{ upload_msg }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+
+        {% for tag in tags %}
+            <span> <a href="#{{ tag }}"> <button class="btn btn-primary" >{{ tag }}</button></a> </span>
+        {% endfor %}
+
+        <hr>
+
+        <div align="center">
+
+            {% for tag, book in tags.items %}
+            <ul><h4><dt><em id="{{ tag }}"> {{ tag }}</em></dt></h4></ul>
+                {% for i in book %}
+                    <ul><ul><dt>
+                                <a href="{{ i.document.url }}">{{ i.name }}</a>
+                                <small>{{ i.description }}</small>
+                                <small>(Uploaded at: {{ obj.uploaded_at }})</small>
+                            </dt></ul></ul>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</html>
